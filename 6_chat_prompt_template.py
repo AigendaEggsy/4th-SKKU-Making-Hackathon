@@ -1,5 +1,6 @@
 # 6. ChatPromptTemplate
 from dotenv import load_dotenv
+import os
 load_dotenv() 
 
 from langchain_openai import ChatOpenAI
@@ -7,7 +8,7 @@ from langchain_openai import ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate # 챗 프롬프트 생성하는 클래스
 from langchain_core.output_parsers import StrOutputParser
 
-chat = ChatOpenAI(model_name="gpt-3.5-turbo-0125")
+chat = ChatOpenAI(model_name=os.getenv('BASIC_GPT_MODEL'))
 
 # template이라는 변수에 ChatPromptTemplate 인스턴스를 집어넣고 from_messages라는 메서드를 통해 채팅용 프롬프트를 작성
 template = ChatPromptTemplate.from_messages(

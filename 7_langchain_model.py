@@ -1,6 +1,7 @@
 # LLM vs Chat Model
 from dotenv import load_dotenv
-load_dotenv() 
+import os
+load_dotenv()
 
 from langchain_openai import OpenAI, ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate
@@ -12,7 +13,7 @@ llm = OpenAI() # OpenAI는 LLM과 Chat Model 위한 별도의 API 엔드포인�
 
 # Chat Model : 사용자와의 상호작용을 통한 연속적인 대화 관리에 더 적합
 # 기능 : Chat Model 클래스는 메시지의 리스트를 입력으로 받고, 하나의 메시지를 반환합니다.
-chat = ChatOpenAI(model_name="gpt-3.5-turbo-0125")
+chat = ChatOpenAI(model_name=os.getenv('BASIC_GPT_MODEL'))
 chat_prompt = ChatPromptTemplate.from_messages([
     ("system", "이 시스템은 여행 전문가 입니다."),
     ("user", "{user_input}"),

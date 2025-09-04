@@ -26,7 +26,7 @@ client = OpenAI(
 def completion(temp):
     start_time = time.time()
     response = client.chat.completions.create(
-        model="gpt-3.5-turbo-0125",
+        model=os.getenv('BASIC_GPT_MODEL'),
         messages=[
             # sample 1
             # {"role": "system", "content": "영어로 된 문장이 제공되며, 이를 한국어로 번역하는 것이 과제입니다."},

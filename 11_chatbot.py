@@ -1,13 +1,15 @@
 # https://github.com/streamlit/docs/blob/main/python/api-examples-source/chat.llm.py
+# streamlit run 11_chatbot.py
 import streamlit as st
 
 from dotenv import load_dotenv
+import os
 load_dotenv()
 
 from langchain_openai import ChatOpenAI
 from langchain.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
-from langchain.callbacks.base import BaseCallbackHandler
+from langchain_core.callbacks import BaseCallbackHandler
 
 st.set_page_config(
     page_title="킹고스마트싱스 챗봇",
@@ -16,36 +18,41 @@ st.set_page_config(
 
 # 스트리밍 설정을 위한 callback class 설정
 class ChatCallbackHandler(BaseCallbackHandler):
-    message=""
+    def __init__(self):
+        self.message = ""
+        self.message_box = None
 
     # llm이 생성되면 메서드 동작
     def on_llm_start(self, *args, **kwargs):
         self.message_box = st.empty()
+        self.message = ""
     
     # llm이 끝나면 메서드 동작
     def on_llm_end(self, *args, **kwargs):
-        save_message(self.message, "ai")
+        if self.message:
+            save_message(self.message, "ai")
 
     # llm token이 생성될 때 메서드 동작
     def on_llm_new_token(self, token, *args, **kwargs):
         self.message += token
-        self.message_box.markdown(self.message)
+        if self.message_box:
+            self.message_box.markdown(self.message)
 
 ##################################################################
 # Langchain 설정 구간
 ##################################################################
 
 chat = ChatOpenAI(
-    model_name="gpt-3.5-turbo-0125",
-    temperature = 0.1,
-    streaming=True, # 스트리밍 활성화
-    callbacks = [ChatCallbackHandler(),] # 콜백 클래스 등록
+    model_name=os.getenv('BASIC_GPT_MODEL'),
+    temperature=0.1,
+    streaming=True,  # 스트리밍 활성화
+    callbacks=[ChatCallbackHandler()]  # 콜백 클래스 등록
 )
 
 # 프롬프트 입력
 prompt = ChatPromptTemplate.from_messages([
-    ("system","You are a helpful AI talking to a human."),
-    ("human","{question}")
+    ("system", "You are a helpful AI talking to a human."),
+    ("human", "{question}")
 ])
 
 # LCEL
@@ -79,7 +86,7 @@ def send_message(message, role, save=True):
 def paint_history():
     # messages라는 session_state에 있는 대화내용 모두 출력하는 함수
     for message in st.session_state["messages"]:
-        send_message(message["message"], message["role"], save=False,)
+        send_message(message["message"], message["role"], save=False)
 
 ##################################################################
 # Streamlit UI 구현
@@ -95,4 +102,8 @@ if question := st.chat_input("질문을 입력하세요..."):
     
     # ai(llm 출력)라는 role로 대화 내용 출력(실시간 스트리밍) 및 저장
     with st.chat_message("ai"):
-        result = chain.invoke(question)
+        try:
+            result = chain.invoke({"question": question})
+            # 결과가 이미 콜백에서 처리되므로 여기서는 저장만
+        except Exception as e:
+            st.error(f"오류가 발생했습니다: {str(e)}")

@@ -1,11 +1,12 @@
 from dotenv import load_dotenv
+import os
 load_dotenv()
 
 from langchain_openai import ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 
-chat = ChatOpenAI(model_name="gpt-3.5-turbo-0125")
+chat = ChatOpenAI(model_name=os.getenv('BASIC_GPT_MODEL'))
 
 template = ChatPromptTemplate.from_messages([
     ("system", "You are a helpful AI bot."),

@@ -17,7 +17,7 @@ def completion():
     start_time = time.time()
     response = client.chat.completions.create(
         # 참고 : https://platform.openai.com/docs/models/overview
-        model="gpt-3.5-turbo-0125",
+        model=os.getenv('BASIC_GPT_MODEL'),
         messages=[
             {"role":"system", "content":"너는 슈퍼마리오브라더스에 나오는 마리오야. 항상 마리오처럼 대답해. 그리고 모든 답변은 한국어로 해"},
             {"role":"user", "content":"너의 삶의 목표는 뭐야?"}

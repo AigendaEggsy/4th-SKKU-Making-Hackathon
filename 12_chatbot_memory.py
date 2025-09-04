@@ -1,14 +1,16 @@
 # https://github.com/streamlit/docs/blob/main/python/api-examples-source/chat.llm.py
+# streamlit run 12_chatbot_memory.py
 import streamlit as st
 
 from dotenv import load_dotenv
+import os
 load_dotenv()
 
 from langchain_openai import ChatOpenAI
 from langchain.schema.runnable import RunnablePassthrough
 from langchain.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.output_parsers import StrOutputParser
-from langchain.callbacks.base import BaseCallbackHandler
+from langchain_core.callbacks import BaseCallbackHandler
 from langchain.memory import ConversationSummaryBufferMemory
 
 st.set_page_config(
@@ -38,7 +40,7 @@ class ChatCallbackHandler(BaseCallbackHandler):
 ##################################################################
 
 chat = ChatOpenAI(
-    model_name="gpt-3.5-turbo-0125",
+    model_name=os.getenv('BASIC_GPT_MODEL'),
     temperature = 0.1,
     streaming=True, # 스트리밍 활성화
     callbacks = [ChatCallbackHandler(),] # 콜백 클래스 등록

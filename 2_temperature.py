@@ -14,7 +14,7 @@ client = OpenAI(
 def completion(qustion, temp):
     start_time = time.time()
     response = client.chat.completions.create(
-        model="gpt-3.5-turbo-0125",
+        model=os.getenv('BASIC_GPT_MODEL'),
         messages=[
             {"role":"user", "content":qustion},
         ],

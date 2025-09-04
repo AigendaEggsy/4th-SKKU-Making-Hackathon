@@ -1,4 +1,5 @@
 from dotenv import load_dotenv
+import os
 load_dotenv() 
 
 # https://python.langchain.com/docs/modules/memory/types/summary_buffer/
@@ -8,7 +9,7 @@ from langchain.schema.runnable import RunnablePassthrough
 from langchain.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.output_parsers import StrOutputParser
 
-chat = ChatOpenAI(model_name="gpt-3.5-turbo-0125",)
+chat = ChatOpenAI(model_name=os.getenv('BASIC_GPT_MODEL'),)
 
 memory = ConversationSummaryBufferMemory(
     llm = chat, # LLM 설정

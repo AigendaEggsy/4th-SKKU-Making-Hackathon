@@ -1,12 +1,13 @@
 # memory (ConversationBufferWindowMemory)
 from dotenv import load_dotenv
+import os
 load_dotenv() 
 
 from langchain_openai import ChatOpenAI
 from langchain.chains import ConversationChain
 from langchain.memory import ConversationBufferWindowMemory
 
-chat = ChatOpenAI(model_name="gpt-3.5-turbo-0125")
+chat = ChatOpenAI(model_name=os.getenv('BASIC_GPT_MODEL'))
 
 # 참고 : https://python.langchain.com/docs/modules/memory/types/buffer_window/
 conversation = ConversationChain(llm=chat, memory=ConversationBufferWindowMemory(k=3,))
